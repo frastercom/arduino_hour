@@ -17,6 +17,7 @@ int levelMenu = 0;
 int courseMenu = 0;
 const int buttonPin = 7;
 const int buttonPin1 = 6;
+unsigned long startTime;
 // Указываем адрес LCD и размер
 LiquidCrystal_I2C lcd(0x27, 16, 2); // Замените 0x27 на адрес вашего LCD, если он другой
 
@@ -29,19 +30,28 @@ void setup() {
   // Выводим "Привет" на второй строке
   lcd.setCursor(0, 0); // Устанавливаем курсор в начало
   lcd.clear();
-
+  startTime = 0;
 }
 
 void loop() {
   // Здесь можно добавить код, который будет выполняться в цикле
-  printTime(42739000);
+  printTime(startTime );// начальное время 10 May 1971 г., 15:56:40
+  if (digitalRead(buttonPin) == HIGH) {
+    startTime = startTime + 3600000 ;
+    delay(500);
+  }
+  if (digitalRead(buttonPin1) == HIGH) {
+    startTime = startTime + 60000 ;
+    delay(500);
+  }
+  
 
 }
 
 void printTime(unsigned long time) {
-  uint32_t val = (millis() + time) / 1000ul;
-  int timeHours = numberOfHours(val);
-  int timeMins = numberOfMinutes(val);
+  uint32_t val = (millis() + time) / 1000ul;// время в секундах
+  int timeHours = numberOfHours(val);// время в часах
+ int timeMins = numberOfMinutes(val);// время в в минутах
   lcdPrintTime(String(timeHours), String(timeMins));
 }
 
@@ -61,3 +71,6 @@ void lcdPrint(String text) {
   lcd.setCursor(0, 0); // Устанавливаем курсор в начало
   lcd.print(text);
 }
+
+
+
